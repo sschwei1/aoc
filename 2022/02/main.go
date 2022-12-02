@@ -44,7 +44,15 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-	return 0
+	totalPoints := 0
+	games := readGames()
+
+	for _, g := range games {
+		points := calcNewScore(g)
+		totalPoints += points
+	}
+
+	return totalPoints
 }
 
 func readGames() []game {
@@ -104,4 +112,28 @@ func calcScore(g game) int {
 	}
 
 	return points
+}
+
+func calcNewScore(g game) int {
+	var newChoice int
+
+	switch g.self {
+	case 1:
+		newChoice = g.opponent - 1
+		break
+	case 2:
+		newChoice = g.opponent
+		break
+	case 3:
+		newChoice = g.opponent - 2
+		break
+	}
+
+	if newChoice < 1 {
+		newChoice += 3
+	}
+
+	g.self = newChoice
+
+	return calcScore(g)
 }
