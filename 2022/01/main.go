@@ -13,7 +13,7 @@ func main() {
 	fmt.Printf("Result-1: %d\n", result1)
 
 	result2 := solveChallengeTwo()
-    fmt.Printf("Result-2: %d\n", result2)
+	fmt.Printf("Result-2: %d\n", result2)
 }
 
 func solveChallengeOne() int {
