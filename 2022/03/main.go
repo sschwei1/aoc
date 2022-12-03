@@ -5,6 +5,7 @@ import (
     "fmt"
     "log"
     "os"
+    "strings"
 )
 
 func main() {
@@ -28,7 +29,16 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-    return 0
+    rucksacks := readRucksacks()
+    badgePriority := 0
+
+    for i := 0; i < len(rucksacks); i += 3 {
+        currGroup := rucksacks[i:i+3]
+        badge := getCommonItem(currGroup)
+        badgePriority += getItemPriority(badge)
+    }
+
+    return badgePriority
 }
 
 func readRucksacks() []string {
@@ -73,6 +83,52 @@ func getDuplicatedItem(rucksack string) int {
 
     // should never occur due to given challenge
     return 0;
+}
+
+func getCommonItem(rucksacks []string) int {
+    sRucksack, sRucksackIndex := getSmallestRucksack(rucksacks)
+
+    for i := 0; i < len(sRucksack); i++ {
+        currChar := string(sRucksack[i])
+        contained := true
+
+        for j := 0; contained && j < len(rucksacks); j++ {
+            if(j == sRucksackIndex) {
+                continue
+            }
+
+            rucksack := rucksacks[j]
+
+            if(!strings.Contains(rucksack, currChar)) {
+                contained = false
+            }
+        }
+
+        if contained {
+            return int(currChar[0])
+        }
+    }
+
+    // should never occur due to given challenge
+    return 0
+}
+
+func getSmallestRucksack(rucksacks []string) (string, int) {
+    if(len(rucksacks) == 0) {
+        return "", -1
+    }
+
+    smallestRucksack := rucksacks[0]
+    smallestRucksackIndex := 0
+
+    for i, rucksack := range rucksacks {
+        if(len(rucksack) < len(smallestRucksack)) {
+            smallestRucksack = rucksack
+            smallestRucksackIndex = i
+        }
+    }
+
+    return smallestRucksack, smallestRucksackIndex
 }
 
 func getItemPriority(item int) int {
