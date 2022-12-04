@@ -41,7 +41,16 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-	return 0
+	pairs := readSectionPairs()
+	overlapCount := 0
+
+	for _, pair := range pairs {
+		if checkPairOverlap(pair) {
+			overlapCount += 1
+		}
+	}
+
+	return overlapCount
 }
 
 func readSectionPairs() []pair {
@@ -120,4 +129,17 @@ func checkPairContained(pair pair) bool {
 
 func isSectionContained(s1 section, s2 section) bool {
 	return s1.from <= s2.from && s1.to >= s2.to
+}
+
+func checkPairOverlap(pair pair) bool {
+	// check if single point of section 2 is contained in the first section
+	// this will fail, if section 2 fully contains the first one, so do a contained check next
+
+	return isNumberInSection(pair.e1, pair.e2.from) ||
+		isNumberInSection(pair.e1, pair.e2.to) ||
+		isSectionContained(pair.e2, pair.e1)
+}
+
+func isNumberInSection(s section, num int) bool {
+	return s.from <= num && s.to >= num
 }
