@@ -124,7 +124,8 @@ func parseSection(sectionStr string, lineNumber int) section {
 }
 
 func checkPairContained(pair pair) bool {
-	return isSectionContained(pair.e1, pair.e2) || isSectionContained(pair.e2, pair.e1)
+	return isSectionContained(pair.e1, pair.e2) ||
+		isSectionContained(pair.e2, pair.e1)
 }
 
 func isSectionContained(s1 section, s2 section) bool {
@@ -132,12 +133,8 @@ func isSectionContained(s1 section, s2 section) bool {
 }
 
 func checkPairOverlap(pair pair) bool {
-	// check if single point of section 2 is contained in the first section
-	// this will fail, if section 2 fully contains the first one, so do a contained check next
-
 	return isNumberInSection(pair.e1, pair.e2.from) ||
-		isNumberInSection(pair.e1, pair.e2.to) ||
-		isSectionContained(pair.e2, pair.e1)
+		isNumberInSection(pair.e2, pair.e1.from)
 }
 
 func isNumberInSection(s section, num int) bool {
