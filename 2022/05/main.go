@@ -21,12 +21,12 @@ func main() {
 	fmt.Printf("Result-1: %s\n", result1)
 
 	result2 := solveChallengeTwo()
-	fmt.Printf("Result-2: %d\n", result2)
+	fmt.Printf("Result-2: %s\n", result2)
 }
 
 func solveChallengeOne() string {
 	towers, moves := readInput()
-	handleMoves(towers, moves)
+	handleMoves9000(towers, moves)
 
 	topChars := ""
 
@@ -37,8 +37,17 @@ func solveChallengeOne() string {
 	return topChars
 }
 
-func solveChallengeTwo() int {
-	return 0
+func solveChallengeTwo() string {
+	towers, moves := readInput()
+	handleMoves9001(towers, moves)
+
+	topChars := ""
+
+	for _, t := range towers {
+		topChars += t.Peek()
+	}
+
+	return topChars
 }
 
 func readInput() ([]h.Stack, []move) {
@@ -113,10 +122,32 @@ func parseLineToMove(m *[]move, line string) {
 	*m = append(*m, newMove)
 }
 
-func handleMoves(towers []h.Stack, moves []move) {
+func handleMoves9000(towers []h.Stack, moves []move) {
 	for _, m := range moves {
 		for i := 0; i < m.amount; i++ {
 			val, success := towers[m.from].Pop()
+
+			if success {
+				towers[m.to].Push(val)
+			}
+		}
+	}
+}
+
+func handleMoves9001(towers []h.Stack, moves []move) {
+	var tmpStack h.Stack
+
+	for _, m := range moves {
+		for i := 0; i < m.amount; i++ {
+			val, success := towers[m.from].Pop()
+
+			if success {
+				tmpStack.Push(val)
+			}
+		}
+
+		for !tmpStack.IsEmpty() {
+			val, success := tmpStack.Pop()
 
 			if success {
 				towers[m.to].Push(val)
