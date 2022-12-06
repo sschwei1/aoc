@@ -1,23 +1,9 @@
-const fs = require('fs');
-const readInput = () => {
-  const content = fs.readFileSync('./input_01.txt', 'utf-8');
-  return content.split(/\r?\n/);
-}
-
-const handleError = (msg = '') => {
-  console.error(msg)
-  process.exit(1);
-}
-const validate = (validateError = false, msg = '') => {
-  if(validateError) {
-    handleError(msg)
-  }
-}
+const aoc = require('../lib/aocHelper');
 
 const solveChallenge1 = () => {
-  const input = readInput();
+  const input = aoc.readInput('./input_01.txt');
 
-  validate(
+  aoc.validate(
     input.length !== 1,
     'File contains an invalid amount of lines'
   );
@@ -31,7 +17,7 @@ const solveChallenge1 = () => {
     } else if(s === ')') {
       currPos -= 1;
     } else {
-      handleError('Invalid character found')
+      aoc.handleError('Invalid character found')
     }
   });
 
@@ -39,9 +25,9 @@ const solveChallenge1 = () => {
 }
 
 const solveChallenge2 = () => {
-  const input = readInput();
+  const input = aoc.readInput('./input_01.txt');
 
-  validate(
+  aoc.validate(
     input.length !== 1,
     'File contains an invalid amount of lines'
   );
@@ -55,7 +41,7 @@ const solveChallenge2 = () => {
     } else if(steps[i] === ')') {
       currPos -= 1;
     } else {
-      handleError('Invalid character found')
+      aoc.handleError('Invalid character found')
     }
 
     if(currPos < 0) {
