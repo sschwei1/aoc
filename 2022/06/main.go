@@ -27,7 +27,13 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-	return 0
+	lines := readInput()
+
+	if len(lines) != 1 {
+		return -1
+	}
+
+	return getMarkerPosition(lines[0], 14)
 }
 
 func readInput() []string {
