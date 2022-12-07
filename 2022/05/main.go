@@ -1,7 +1,7 @@
 package main
 
 import (
-	"05/h"
+	"2022/h"
 	"bufio"
 	"fmt"
 	"log"
