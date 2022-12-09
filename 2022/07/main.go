@@ -35,7 +35,15 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-	return 0
+	lines := readInput()
+
+	srcDir := calcDirectory(lines)
+
+	// 40k is the max space allowed for all dirs
+	spaceToFreeUp := calcDirSize(srcDir) - 40000000
+	sizes := getDirSizesToFreeUp(srcDir, spaceToFreeUp)
+
+	return getMinElement(sizes)
 }
 
 func calcDirectory(lines []string) directory {
@@ -120,6 +128,37 @@ func calcDirSize(dir directory) int {
 	return totalSize
 }
 
+func getDirSizesToFreeUp(dir directory, minSize int) []int {
+	var sizes []int
+
+	for _, subDir := range dir.subDirs {
+		subDirSizes := getDirSizesToFreeUp(subDir, minSize)
+		sizes = append(sizes, subDirSizes...)
+	}
+
+	dirSize := calcDirSize(dir)
+	if dirSize >= minSize {
+		sizes = append(sizes, dirSize)
+	}
+
+	return sizes
+}
+
+func getMinElement(sizes []int) int {
+	if len(sizes) == 0 {
+		return -1
+	}
+
+	minVal := sizes[0]
+
+	for _, val := range sizes {
+		if val < minVal {
+			minVal = val
+		}
+	}
+
+	return minVal
+}
 func readInput() []string {
 	// open file
 	file, err := os.Open("./input_01.txt")
