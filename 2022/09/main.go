@@ -29,18 +29,37 @@ func solveChallengeOne() int {
 	headPos := position{x: 0, y: 0}
 	tailPos := position{x: 0, y: 0}
 
+	var tails []*position
+	tails = append(tails, &tailPos)
+
 	for _, line := range lines {
-		handleMove(line, &headPos, &tailPos, &visitedPos)
+		handleMove(line, &headPos, tails, &visitedPos)
 	}
 
 	return len(visitedPos)
 }
 
 func solveChallengeTwo() int {
-	return 0
+	lines := readInput()
+
+	visitedPos := make(map[position]bool)
+	headPos := position{x: 0, y: 0}
+
+	var tails []*position
+
+	for i := 0; i < 9; i++ {
+		tailPos := position{x: 0, y: 0}
+		tails = append(tails, &tailPos)
+	}
+
+	for _, line := range lines {
+		handleMove(line, &headPos, tails, &visitedPos)
+	}
+
+	return len(visitedPos)
 }
 
-func handleMove(move string, headPos *position, tailPos *position, visitedPos *map[position]bool) {
+func handleMove(move string, headPos *position, tails []*position, visitedPos *map[position]bool) {
 	moveSplit := strings.Split(move, " ")
 
 	moveDir := moveSplit[0]
@@ -58,8 +77,14 @@ func handleMove(move string, headPos *position, tailPos *position, visitedPos *m
 			headPos.x += 1
 		}
 
-		moveTail(*headPos, tailPos)
-		(*visitedPos)[*tailPos] = true
+		lastTail := headPos
+
+		for _, pTail := range tails {
+			moveTail(*lastTail, pTail)
+			lastTail = pTail
+		}
+
+		(*visitedPos)[*lastTail] = true
 	}
 }
 
