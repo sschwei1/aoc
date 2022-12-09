@@ -34,7 +34,22 @@ func solveChallengeOne() int {
 }
 
 func solveChallengeTwo() int {
-	return 0
+	trees := readInput()
+
+	maxScore := 0
+
+	for x := 0; x < len(trees[0]); x++ {
+		for y := 0; y < len(trees); y++ {
+			pos := position{x, y}
+			newScore := calcScenicScore(trees, pos)
+
+			if newScore > maxScore {
+				maxScore = newScore
+			}
+		}
+	}
+
+	return maxScore
 }
 
 func checkVisibilityTop(trees []string, visTrees *map[position]bool) {
@@ -103,6 +118,83 @@ func checkVisibilityBottom(trees []string, visTrees *map[position]bool) {
 			maxTreeSize = treeSize
 		}
 	}
+}
+
+func calcScenicScore(trees []string, pos position) int {
+	top := getTreesTop(trees, pos)
+	left := getTreesLeft(trees, pos)
+	right := getTreesRight(trees, pos)
+	bottom := getTreesBottom(trees, pos)
+
+	return top * left * right * bottom
+}
+
+func getTreesTop(trees []string, pos position) int {
+	treeCnt := 0
+
+	treeSize := trees[pos.y][pos.x]
+
+	for y := pos.y - 1; y >= 0; y-- {
+		currTreeSize := trees[y][pos.x]
+		treeCnt++
+
+		if treeSize <= currTreeSize {
+			break
+		}
+	}
+
+	return treeCnt
+}
+
+func getTreesLeft(trees []string, pos position) int {
+	treeCnt := 0
+
+	treeSize := trees[pos.y][pos.x]
+
+	for x := pos.x - 1; x >= 0; x-- {
+		currTreeSize := trees[pos.y][x]
+		treeCnt++
+
+		if treeSize <= currTreeSize {
+			break
+		}
+	}
+
+	return treeCnt
+}
+
+func getTreesRight(trees []string, pos position) int {
+	treeCnt := 0
+
+	treeSize := trees[pos.y][pos.x]
+
+	for x := pos.x + 1; x < len(trees[0]); x++ {
+		currTreeSize := trees[pos.y][x]
+		treeCnt++
+
+		if treeSize <= currTreeSize {
+			break
+		}
+	}
+
+	return treeCnt
+}
+
+func getTreesBottom(trees []string, pos position) int {
+	treeCnt := 0
+
+	treeSize := trees[pos.y][pos.x]
+
+	for y := pos.y + 1; y < len(trees); y++ {
+		currTreeSize := trees[y][pos.x]
+		treeCnt++
+
+		if treeSize <= currTreeSize {
+			break
+		}
+	}
+
+	return treeCnt
 }
 
 func readInput() []string {
