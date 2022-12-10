@@ -21,7 +21,7 @@ func main() {
 	fmt.Printf("Result-1: %d\n", result1)
 
 	result2 := solveChallengeTwo()
-	fmt.Printf("Result-2: %d\n", result2)
+	fmt.Printf("Result-2:\n%s", result2)
 }
 
 func solveChallengeOne() int {
@@ -58,8 +58,46 @@ func solveChallengeOne() int {
 	return regCountTotal
 }
 
-func solveChallengeTwo() int {
-	return 0
+func solveChallengeTwo() string {
+	lines := readInput()
+
+	cycle := 0
+	register := 1
+
+	result := ""
+
+	var lineSplit []string
+	var execNext extraCycleFnc
+	execNext = nil
+
+	for i := 0; i < len(lines); i++ {
+		cycle += 1
+
+		regCycleDiff := register - (cycle%40 - 1)
+
+		if getAbs(regCycleDiff) > 1 {
+			result += " "
+		} else {
+			result += "#"
+		}
+
+		if (cycle)%40 == 0 {
+			result += "\n"
+		}
+
+		if execNext != nil {
+			i -= 1
+			execNext(lineSplit, &register, &execNext)
+		} else {
+			lineSplit = strings.Split(lines[i], " ")
+
+			if val, ok := commands[lineSplit[0]]; ok {
+				execNext = val
+			}
+		}
+	}
+
+	return result
 }
 
 func handleAddX(command []string, register *int, execNext *extraCycleFnc) {
@@ -70,8 +108,14 @@ func handleAddX(command []string, register *int, execNext *extraCycleFnc) {
 	}
 
 	*register += val
-
 	*execNext = nil
+}
+
+func getAbs(num int) int {
+	if num >= 0 {
+		return num
+	}
+	return num * -1
 }
 
 func readInput() []string {
