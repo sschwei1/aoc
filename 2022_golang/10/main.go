@@ -10,6 +10,7 @@ import (
 )
 
 type extraCycleFnc func([]string, *int, *extraCycleFnc)
+type handleCycleBegin func(int, int)
 
 var commands = map[string]extraCycleFnc{
 	"noop": nil,
@@ -27,33 +28,15 @@ func main() {
 func solveChallengeOne() int {
 	lines := readInput()
 
-	cycle := 0
-	register := 1
-
-	var lineSplit []string
-	var execNext extraCycleFnc
-	execNext = nil
-
 	regCountTotal := 0
 
-	for i := 0; i < len(lines); i++ {
-		cycle += 1
-
+	cycleBegin := func(cycle int, register int) {
 		if (cycle-20)%40 == 0 {
 			regCountTotal += register * cycle
 		}
-
-		if execNext != nil {
-			i -= 1
-			execNext(lineSplit, &register, &execNext)
-		} else {
-			lineSplit = strings.Split(lines[i], " ")
-
-			if val, ok := commands[lineSplit[0]]; ok {
-				execNext = val
-			}
-		}
 	}
+
+	execCommands(lines, cycleBegin)
 
 	return regCountTotal
 }
@@ -61,18 +44,9 @@ func solveChallengeOne() int {
 func solveChallengeTwo() string {
 	lines := readInput()
 
-	cycle := 0
-	register := 1
-
 	result := ""
 
-	var lineSplit []string
-	var execNext extraCycleFnc
-	execNext = nil
-
-	for i := 0; i < len(lines); i++ {
-		cycle += 1
-
+	cycleBegin := func(cycle int, register int) {
 		regCycleDiff := register - (cycle%40 - 1)
 
 		if getAbs(regCycleDiff) > 1 {
@@ -84,20 +58,37 @@ func solveChallengeTwo() string {
 		if (cycle)%40 == 0 {
 			result += "\n"
 		}
+	}
+
+	execCommands(lines, cycleBegin)
+
+	return result
+}
+
+func execCommands(commandSlc []string, cycleBegin handleCycleBegin) {
+	cycle := 0
+	register := 1
+
+	var cmdSplit []string
+	var execNext extraCycleFnc
+	execNext = nil
+
+	for i := 0; i < len(commandSlc); i++ {
+		cycle += 1
+
+		cycleBegin(cycle, register)
 
 		if execNext != nil {
 			i -= 1
-			execNext(lineSplit, &register, &execNext)
+			execNext(cmdSplit, &register, &execNext)
 		} else {
-			lineSplit = strings.Split(lines[i], " ")
+			cmdSplit = strings.Split(commandSlc[i], " ")
 
-			if val, ok := commands[lineSplit[0]]; ok {
+			if val, ok := commands[cmdSplit[0]]; ok {
 				execNext = val
 			}
 		}
 	}
-
-	return result
 }
 
 func handleAddX(command []string, register *int, execNext *extraCycleFnc) {
