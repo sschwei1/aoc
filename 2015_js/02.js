@@ -1,4 +1,4 @@
-const aoc = require('../lib/aocHelper');
+const aoc = require('./lib/aocHelper');
 
 const solveChallenge1 = () => {
   const input = aoc.readInput('./input_01.txt');
